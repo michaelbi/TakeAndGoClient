@@ -1,13 +1,19 @@
 package il.ac.jct.michaelzalman.takeandgoclient.model.DataSource;
 
+import android.app.ActivityManager;
+import android.app.Application;
 import android.content.ContentValues;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import il.ac.jct.michaelzalman.takeandgoclient.R;
+import il.ac.jct.michaelzalman.takeandgoclient.controller.MainLogin;
 import il.ac.jct.michaelzalman.takeandgoclient.model.backend.IDBManager;
 import il.ac.jct.michaelzalman.takeandgoclient.model.backend.TakeAndGoConsts;
 import il.ac.jct.michaelzalman.takeandgoclient.model.entities.*;
@@ -24,8 +30,18 @@ public class MySQL_DBManager implements IDBManager {
     @Override
     public boolean isClientExist(ContentValues client) {
 
+        try {
 
-        return false;
+            String message, sub;
+            message = PHPtools.POST(WEB_URL + "functions/findClient.php", client);
+            sub = message.substring(1, message.indexOf(' ', 1) - 1);
+            Integer.parseInt(sub);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     @Override
@@ -159,5 +175,57 @@ public class MySQL_DBManager implements IDBManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void updateCarKilometers(int kilometers) {
+
+    }
+
+    @Override
+    public List<Car> getAvailableCars() {
+        return null;
+    }
+
+    @Override
+    public List<Car> getAvailableCarsForBranch(int branchID) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getUnclosedOrders() {
+        return null;
+    }
+
+    @Override
+    public void addOrder(ContentValues order) {
+
+    }
+
+    @Override
+    public void closeOrder(int kilometers) {
+
+    }
+
+    @Override
+    public boolean loginCheck(ContentValues userAndPass) throws Exception{
+        if(isClientExist(userAndPass) == true)
+        {
+            try {
+
+                String message, sub;
+                message = PHPtools.POST(WEB_URL + "functions/login.php", userAndPass);
+                sub = message.substring(1, message.indexOf(' ', 1) - 1);
+                Log.d("recived",sub);
+                Integer.parseInt(sub);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("סיסמא שגויה");
+            }
+        }
+        else{
+            throw new Exception("משתמש לא קיים");}
     }
 }

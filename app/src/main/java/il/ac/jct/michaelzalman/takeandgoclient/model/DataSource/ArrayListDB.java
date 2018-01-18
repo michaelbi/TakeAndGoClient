@@ -128,6 +128,41 @@ public class ArrayListDB  implements IDBManager {
     public List<Car> getAllCars() {
         return cars;
     }
+
+    @Override
+    public void updateCarKilometers(int kilometers) {
+
+    }
+
+    @Override
+    public List<Car> getAvailableCars() {
+        return null;
+    }
+
+    @Override
+    public List<Car> getAvailableCarsForBranch(int branchID) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getUnclosedOrders() {
+        return null;
+    }
+
+    @Override
+    public void addOrder(ContentValues order) {
+
+    }
+
+    @Override
+    public void closeOrder(int kilometers) {
+
+    }
+
+    @Override
+    public boolean loginCheck(ContentValues userAndPass) throws Exception{
+        return false;
+    }
     //endregion
 
     //region Description private existance methods

@@ -15,7 +15,11 @@ public class Client
     private String phoneNumber;
     private String email;
     private String creditCard;
+    private String password;
 
+    public String getPassword() {
+        return password;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -64,5 +68,10 @@ public class Client
     public void setCreditCard(String creditCard) {
         this.creditCard = creditCard;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     //convertors
 }

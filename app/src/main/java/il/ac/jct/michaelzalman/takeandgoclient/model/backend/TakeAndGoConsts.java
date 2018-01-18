@@ -62,6 +62,8 @@ public class TakeAndGoConsts {
         public static final String PHONE_NUMBER = "phone_number";
         public static final String EMAIL = "email";
         public static final String CREDIT_CARD = "credit_card";
+        public static final String PASSWORD = "password";
+
     }
 
     public static ContentValues ClientToContentValues(Client client){
@@ -72,6 +74,8 @@ public class TakeAndGoConsts {
         content.put(ClientConst.PHONE_NUMBER, client.getPhoneNumber());
         content.put(ClientConst.EMAIL, client.getEmail());
         content.put(ClientConst.CREDIT_CARD, client.getCreditCard());
+        content.put(ClientConst.PASSWORD, client.getPassword());
+
         return content;
     }
 
@@ -85,6 +89,7 @@ public class TakeAndGoConsts {
         client.setEmail((String)content.get(ClientConst.EMAIL));
         client.setPhoneNumber((String)content.get(ClientConst.PHONE_NUMBER));
         client.setCreditCard((String)content.get(ClientConst.CREDIT_CARD));
+        client.setPassword(content.getAsString(ClientConst.PASSWORD));
 
         return client;
 

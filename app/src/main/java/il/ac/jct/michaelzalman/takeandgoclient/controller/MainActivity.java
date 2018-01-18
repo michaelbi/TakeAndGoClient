@@ -15,6 +15,9 @@ import android.view.MenuItem;
 
 import il.ac.jct.michaelzalman.takeandgoclient.R;
 
+/**
+ *
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
