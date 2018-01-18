@@ -178,17 +178,60 @@ public class MySQL_DBManager implements IDBManager {
     }
 
     @Override
-    public void updateCarKilometers(int kilometers) {
+    public void updateCarKilometers(ContentValues kilometers) {
+
+        try
+        {
+            String message, sub;
+            message = PHPtools.POST(WEB_URL+"functions/updateCarKilometers.php",kilometers);
+            sub = message.substring(1, message.indexOf(' ', 1) - 1);
+            Integer.parseInt(sub);
+        }
+        catch (Exception e)
+        {
+
+        }
 
     }
 
     @Override
     public List<Car> getAvailableCars() {
+
+        List<Car> result = new ArrayList<Car>();
+        try {
+            String str = PHPtools.GET(WEB_URL + "functions/freeCars.php");
+            JSONArray array = new JSONObject(str).getJSONArray("cars");
+            for (int i = 0; i < array.length(); i++) {
+                result.add(
+                        TakeAndGoConsts.ContentValuesToCar(
+                                PHPtools.jsonToContentValues(array.getJSONObject(i))
+                        ));
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public List<Car> getAvailableCarsForBranch(int branchID) {
+    public List<Car> getAvailableCarsForBranch(ContentValues branch) {
+
+
+        List<Car> result = new ArrayList<Car>();
+        try {
+            String str = PHPtools.POST(WEB_URL + "functions/freeCarsForBranch.php" ,branch);
+            JSONArray array = new JSONObject(str).getJSONArray("cars");
+            for (int i = 0; i < array.length(); i++) {
+                result.add(
+                        TakeAndGoConsts.ContentValuesToCar(
+                                PHPtools.jsonToContentValues(array.getJSONObject(i))
+                        ));
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -203,7 +246,7 @@ public class MySQL_DBManager implements IDBManager {
     }
 
     @Override
-    public void closeOrder(int kilometers) {
+    public void closeOrder(ContentValues kilometers) {
 
     }
 
@@ -216,7 +259,6 @@ public class MySQL_DBManager implements IDBManager {
                 String message, sub;
                 message = PHPtools.POST(WEB_URL + "functions/login.php", userAndPass);
                 sub = message.substring(1, message.indexOf(' ', 1) - 1);
-                Log.d("recived",sub);
                 Integer.parseInt(sub);
                 return true;
             }

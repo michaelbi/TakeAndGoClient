@@ -130,7 +130,7 @@ public class ArrayListDB  implements IDBManager {
     }
 
     @Override
-    public void updateCarKilometers(int kilometers) {
+    public void updateCarKilometers(ContentValues kilometers) {
 
     }
 
@@ -140,7 +140,7 @@ public class ArrayListDB  implements IDBManager {
     }
 
     @Override
-    public List<Car> getAvailableCarsForBranch(int branchID) {
+    public List<Car> getAvailableCarsForBranch(ContentValues branchID) {
         return null;
     }
 
@@ -155,7 +155,7 @@ public class ArrayListDB  implements IDBManager {
     }
 
     @Override
-    public void closeOrder(int kilometers) {
+    public void closeOrder(ContentValues kilometers) {
 
     }
 

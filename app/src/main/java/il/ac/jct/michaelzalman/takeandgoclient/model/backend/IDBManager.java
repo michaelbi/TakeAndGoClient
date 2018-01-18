@@ -22,12 +22,12 @@ public interface IDBManager {
     List<Branch> getAllBranchs();
     List<Car> getAllCars();
 
-    void updateCarKilometers(int kilometers);
+    void updateCarKilometers(ContentValues kilometers);
     List<Car> getAvailableCars();
-    List<Car> getAvailableCarsForBranch(int branchID);
+    List<Car> getAvailableCarsForBranch(ContentValues branchID);
     List<Order> getUnclosedOrders();
     void addOrder(ContentValues order);
-    void closeOrder(int kilometers);
+    void closeOrder(ContentValues kilometers);
     boolean loginCheck(ContentValues userAndPass) throws Exception;
 
 
