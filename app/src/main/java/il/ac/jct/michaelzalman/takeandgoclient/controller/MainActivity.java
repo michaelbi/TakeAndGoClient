@@ -1,8 +1,10 @@
 package il.ac.jct.michaelzalman.takeandgoclient.controller;
 
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import il.ac.jct.michaelzalman.takeandgoclient.R;
+import il.ac.jct.michaelzalman.takeandgoclient.fragments.showBranches;
 
 /**
  *
@@ -90,6 +93,15 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
+            // Create new fragment and transaction
+            Fragment newFragment = new showBranches();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+            transaction.replace(R.id.fragmentLayout, newFragment);
+            transaction.addToBackStack(null);
+        // Commit the transaction
+            transaction.commit();
 
         } else if (id == R.id.nav_slideshow) {
 

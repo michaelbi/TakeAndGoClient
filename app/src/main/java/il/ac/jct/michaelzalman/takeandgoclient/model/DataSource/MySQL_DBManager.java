@@ -107,9 +107,8 @@ public class MySQL_DBManager implements IDBManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -126,9 +125,8 @@ public class MySQL_DBManager implements IDBManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -146,9 +144,8 @@ public class MySQL_DBManager implements IDBManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -166,9 +163,8 @@ public class MySQL_DBManager implements IDBManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -203,9 +199,8 @@ public class MySQL_DBManager implements IDBManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -224,9 +219,8 @@ public class MySQL_DBManager implements IDBManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
