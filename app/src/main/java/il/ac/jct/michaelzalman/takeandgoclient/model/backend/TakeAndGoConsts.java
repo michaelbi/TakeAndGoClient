@@ -1,6 +1,11 @@
 package il.ac.jct.michaelzalman.takeandgoclient.model.backend;
 
 import android.content.ContentValues;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
+
 
 import java.util.Date;
 
@@ -203,19 +208,27 @@ public class TakeAndGoConsts {
     public static Order ContentValuesToOrder(ContentValues content)
     {
         Order order = new Order();
-        order.setId((String) content.get(OrderConst.ID));
-        order.setCarId((String) content.get(OrderConst.CAR_ID));
-        order.setClientId((String) content.get(OrderConst.CLIENT_ID));
-        order.setStartHiring(new Date(content.get(OrderConst.START_HIRING).toString()));
-        order.setEndHiring(new Date(content.get(OrderConst.END_HIRING).toString()));
-        order.setStartKilometer((int) content.get(OrderConst.START_KILOMETER));
-        order.setEndKilometer((int) content.get(OrderConst.END_KILOMETER));
-        order.setFuel((Boolean) content.get(OrderConst.FUEL));
-        order.setFiledFuel((Float) content.get(OrderConst.FILED_FUEL));
-        order.setTotalChargeSum((Float) content.get(OrderConst.TOTAL_CHARGE_SUM));
+        order.setId(content.getAsString(OrderConst.ID));
+        order.setCarId(content.getAsString(OrderConst.CAR_ID));
+        order.setClientId( content.getAsString(OrderConst.CLIENT_ID));
+        order.setStartHiring(new Date (content.getAsString(OrderConst.START_HIRING)));
+        order.setEndHiring(new Date(content.getAsString(OrderConst.END_HIRING)));
+        order.setStartKilometer( content.getAsInteger(OrderConst.START_KILOMETER));
+        order.setEndKilometer( content.getAsInteger(OrderConst.END_KILOMETER));
+        order.setFuel( content.getAsBoolean(OrderConst.FUEL));
+        order.setFiledFuel( content.getAsFloat(OrderConst.FILED_FUEL));
+        order.setTotalChargeSum( content.getAsFloat(OrderConst.TOTAL_CHARGE_SUM));
 
         return order;
     }
 
     //endregion
+
+    public static class sharePrefConsts
+    {
+        public static final String USER_NAME = "USER_NAME";
+        public static final String PASSWORD = "PASSWORD";
+        public static final String REMEMBER_ME = "REMEMBER_ME";
+
+    }
 }

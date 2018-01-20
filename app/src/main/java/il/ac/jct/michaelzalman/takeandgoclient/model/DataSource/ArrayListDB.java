@@ -150,7 +150,7 @@ public class ArrayListDB  implements IDBManager {
     }
 
     @Override
-    public void addOrder(ContentValues order) {
+    public void addOrder(ContentValues order) throws Exception {
 
     }
 

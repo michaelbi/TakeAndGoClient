@@ -2,36 +2,50 @@ package il.ac.jct.michaelzalman.takeandgoclient.controller;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import il.ac.jct.michaelzalman.takeandgoclient.R;
 import il.ac.jct.michaelzalman.takeandgoclient.model.backend.DBFactory;
+import il.ac.jct.michaelzalman.takeandgoclient.model.backend.TakeAndGoConsts;
+import il.ac.jct.michaelzalman.takeandgoclient.model.backend.Tools;
 
-public class MainLogin extends AppCompatActivity implements View.OnClickListener{
+public class MainLogin extends AppCompatActivity implements View.OnClickListener {
 
 
+    //-------------Class Arguments----------------//
     private EditText username;
     private EditText password;
     private Button login;
     private TextView register;
     private ContentValues userPassword;
+    private CheckBox rememberMe;
 
-    private backgroundProcess<Void,Void,Void> loginBgp;
-    private backgroundProcess.backgroundProcessActions<Void,Void,Void> loginAction;
+    //------------BackGround Process Arguments------------//
+    private backgroundProcess<Void, Void, Void> loginBgp;
+    private backgroundProcess.backgroundProcessActions<Void, Void, Void> loginAction;
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPreferences.edit();
 
         loginAction = new backgroundProcess.backgroundProcessActions<Void, Void, Void>() {
             private String error;
@@ -40,11 +54,37 @@ public class MainLogin extends AppCompatActivity implements View.OnClickListener
             public Void doInBackground() {
                 try {
                     error = null;
-                    DBFactory.getIdbManager().isClientExist(userPassword);
-                    DBFactory.getIdbManager().loginCheck(userPassword);
-                }
-                catch (Exception e)
-                {
+
+                    if ((!sharedPreferences.contains(TakeAndGoConsts.sharePrefConsts.USER_NAME)) ||
+                            username.getText().toString().compareTo(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.USER_NAME, null)) != 0 ||
+                            password.getText().toString().compareTo(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.PASSWORD, null)) != 0
+                            ) {
+
+                        if (!Tools.isInternetConnected(MainLogin.this)) {
+                            error = "אין חיבור נתונים\nהתחבר ונסה שנית";
+                            return null;
+                        }
+                        DBFactory.getIdbManager().isClientExist(userPassword);
+                        DBFactory.getIdbManager().loginCheck(userPassword);
+
+                        editor.putString(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.USER_NAME, null), username.getText().toString());
+                        editor.putString(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.PASSWORD, null), password.getText().toString());
+                    } else {
+                        if (
+                                username.getText().toString().compareTo(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.USER_NAME, null)) != 0 ||
+                                        password.getText().toString().compareTo(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.PASSWORD, null)) != 0) {
+                            error = "שם משתמש או סיסמא שגויים";
+                        }
+                    }
+
+                    if (rememberMe.isChecked()) {
+                        editor.putString(TakeAndGoConsts.sharePrefConsts.REMEMBER_ME, "TRUE");
+                    } else if (sharedPreferences.contains(TakeAndGoConsts.sharePrefConsts.REMEMBER_ME)) {
+                        editor.remove(TakeAndGoConsts.sharePrefConsts.REMEMBER_ME);
+                    }
+                    editor.commit();
+
+                } catch (Exception e) {
                     error = e.getMessage();
                 }
 
@@ -54,20 +94,29 @@ public class MainLogin extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onPostExecute(Void aVoid) {
 
-                if(null == error)
-                {
-                    Intent intent = new Intent(MainLogin.this,MainActivity.class);
-                    intent.putExtra("_id",username.getText().toString());
+                if (null == error) {
+                    Intent intent = new Intent(MainLogin.this, MainActivity.class);
+                    intent.putExtra("_id", username.getText().toString());
                     startActivity(intent);
                     finish();
-                }
-                else
+                } else
                     Toast.makeText(MainLogin.this, error, Toast.LENGTH_LONG).show();
 
             }
         };
 
         findViews();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (sharedPreferences.contains(TakeAndGoConsts.sharePrefConsts.USER_NAME) &&
+                sharedPreferences.contains(TakeAndGoConsts.sharePrefConsts.REMEMBER_ME)) {
+            username.setText(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.USER_NAME, null));
+            password.setText(sharedPreferences.getString(TakeAndGoConsts.sharePrefConsts.PASSWORD, null));
+            rememberMe.setChecked(true);
+        }
     }
 
     /**
@@ -77,10 +126,11 @@ public class MainLogin extends AppCompatActivity implements View.OnClickListener
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private void findViews() {
-        username = (EditText)findViewById( R.id.username );
-        password = (EditText)findViewById( R.id.password );
-        login = (Button)findViewById( R.id.login );
-        register = (TextView)findViewById( R.id.register );
+        username = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
+        login = (Button) findViewById(R.id.login);
+        register = (TextView) findViewById(R.id.register);
+        rememberMe = (CheckBox) findViewById(R.id.login_remember_me);
 
         login.setOnClickListener(this);
         register.setOnClickListener(this);
@@ -95,22 +145,20 @@ public class MainLogin extends AppCompatActivity implements View.OnClickListener
      */
     @Override
     public void onClick(View v) {
-        if ( v == login ) {
+        if (v == login) {
             userPassword = new ContentValues();
             userPassword.put("_id", username.getText().toString());
-            userPassword.put("password",password.getText().toString());
+            userPassword.put("password", password.getText().toString());
 
-            if(loginBgp == null || loginBgp.getStatus() != AsyncTask.Status.RUNNING) {
+            if (loginBgp == null || loginBgp.getStatus() != AsyncTask.Status.RUNNING) {
                 loginBgp = new backgroundProcess<>(loginAction);
                 loginBgp.execute();
-            }
-            else
-                Toast.makeText(this,"תהליך בפעולה",Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(this, "תהליך בפעולה", Toast.LENGTH_LONG).show();
         }
-        if( v == register)
-        {
+        if (v == register) {
             register.setTextColor(Color.parseColor("#0B0080"));
-            Intent intent = new Intent(this,AddClientActivity.class);
+            Intent intent = new Intent(this, AddClientActivity.class);
             startActivity(intent);
         }
     }

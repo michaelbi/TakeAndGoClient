@@ -1,19 +1,13 @@
 package il.ac.jct.michaelzalman.takeandgoclient.model.DataSource;
 
-import android.app.ActivityManager;
-import android.app.Application;
 import android.content.ContentValues;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import il.ac.jct.michaelzalman.takeandgoclient.R;
-import il.ac.jct.michaelzalman.takeandgoclient.controller.MainLogin;
 import il.ac.jct.michaelzalman.takeandgoclient.model.backend.IDBManager;
 import il.ac.jct.michaelzalman.takeandgoclient.model.backend.TakeAndGoConsts;
 import il.ac.jct.michaelzalman.takeandgoclient.model.entities.*;
@@ -237,17 +231,52 @@ public class MySQL_DBManager implements IDBManager {
 
     @Override
     public List<Order> getUnclosedOrders() {
+
+        List<Order> result = new ArrayList<Order>();
+        try {
+            String str = PHPtools.GET(WEB_URL + "functions/freeCarsForBranch.php");
+            JSONArray array = new JSONObject(str).getJSONArray("cars");
+            for (int i = 0; i < array.length(); i++) {
+                result.add(
+                        TakeAndGoConsts.ContentValuesToOrder(
+                                PHPtools.jsonToContentValues(array.getJSONObject(i))
+                        ));
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public void addOrder(ContentValues order) {
-
+    public void addOrder(ContentValues order) throws Exception
+    {
+        String message, sub;
+        message = PHPtools.POST(WEB_URL + "addOrder.php", order);
+        try {
+            sub = message.substring(1, message.indexOf(' ', 1) - 1);
+            Integer.parseInt(sub);
+        } catch (Exception e) {
+            throw new Exception(message);
+        }
     }
 
     @Override
-    public void closeOrder(ContentValues kilometers) {
+    public void closeOrder(ContentValues kilometers)
+    {
+        updateCarKilometers(kilometers);
+        try
+        {
+            String message, sub;
+            message = PHPtools.POST(WEB_URL+"functions/closeOrder.php",kilometers);
+            sub = message.substring(1, message.indexOf(' ', 1) - 1);
+            Integer.parseInt(sub);
+        }
+        catch (Exception e)
+        {
 
+        }
     }
 
     @Override

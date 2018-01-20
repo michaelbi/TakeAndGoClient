@@ -26,7 +26,7 @@ public interface IDBManager {
     List<Car> getAvailableCars();
     List<Car> getAvailableCarsForBranch(ContentValues branchID);
     List<Order> getUnclosedOrders();
-    void addOrder(ContentValues order);
+    void addOrder(ContentValues order) throws Exception;
     void closeOrder(ContentValues kilometers);
     boolean loginCheck(ContentValues userAndPass) throws Exception;
 
